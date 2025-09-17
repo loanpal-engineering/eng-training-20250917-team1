@@ -124,7 +124,8 @@ def register():
         
         password = request.form['password']
         confirm_password = request.form['confirm_password']
-        role = request.form['role']
+        # ✅ SECURITY FIX: Always assign 'normal' role for public registration
+        role = 'normal'  # Do not accept role from user input
         quote_id = None
         if 'quote_id' in request.form:
             quote_id = request.form['quote_id']
@@ -299,7 +300,7 @@ def admin():
     return render_template('admin.html', user=user, users=users, user_roles=user_roles, quotes=quotes, quote_users=quote_users)
 
 
-@main.route('/orgadmin')
+@main.route('/orgadmin', methods=['GET', 'POST'])
 def orgadmin():
     if 'user_id' not in session or session['user_id'] is None:
         flash("You must be logged in to access this page.", "danger")
